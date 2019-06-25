@@ -13,9 +13,7 @@
   :start ((or (:init defaults) (fn [])))
   :stop  ((or (:stop defaults) (fn []))))
 
-(mount/defstate app
-  :start
-  (middleware/wrap-base
+(def app-routes
     (ring/ring-handler
       (ring/router
         [(home-routes)])
@@ -30,4 +28,7 @@
            :method-not-allowed
            (constantly (error-page {:status 405, :title "405 - Not allowed"}))
            :not-acceptable
-           (constantly (error-page {:status 406, :title "406 - Not acceptable"}))})))))
+           (constantly (error-page {:status 406, :title "406 - Not acceptable"}))}))))
+
+(defn app []
+  (middleware/wrap-base #'app-routes))
